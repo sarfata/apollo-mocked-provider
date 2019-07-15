@@ -1,16 +1,19 @@
 import * as React from 'react';
 import { ApolloLink, Observable } from 'apollo-link';
-import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { GraphQLError } from 'graphql';
 import { ApolloCache } from 'apollo-cache';
+import { ApolloProviderProps, ApolloProvider } from 'react-apollo';
 
-export const createApolloErrorProvider = (apolloCache: ApolloCache<any>) => ({
+export const createApolloErrorProvider = (
+  apolloCache: ApolloCache<any>,
+  provider?: React.ComponentType<ApolloProviderProps<any>>
+) => ({
   graphQLErrors,
   children,
 }: {
   graphQLErrors: GraphQLError[];
-  children: React.ReactNode | JSX.Element;
+  children: React.ReactChild | JSX.Element;
 }) => {
   // This is just a link that swallows all operations and returns the same thing
   // for every request: The specified error.
@@ -30,5 +33,6 @@ export const createApolloErrorProvider = (apolloCache: ApolloCache<any>) => ({
     cache: apolloCache,
   });
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  const Provider = provider ? provider : ApolloProvider;
+  return <Provider client={client}>{children}</Provider>;
 };

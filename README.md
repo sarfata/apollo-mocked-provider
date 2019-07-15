@@ -16,10 +16,10 @@ yarn add apollo-mocked-provider
 import {
   createApolloErrorProvider,
   createApolloMockedProvider,
-  createApolloLoadingProvider
-} from "apollo-mocked-provider";
-import { typeDefs } from "./typeDefs";
-import { InMemoryCache } from "apollo-boost";
+  createApolloLoadingProvider,
+} from 'apollo-mocked-provider';
+import { typeDefs } from './typeDefs';
+import { InMemoryCache } from 'apollo-boost';
 
 const cache = new InMemoryCache();
 
@@ -32,10 +32,10 @@ You can get the `typeDefs` with this helper file
 
 ```js
 // downloadTypeDefs.js
-const { fetchTypeDefs } = require("apollo-mocked-provider");
+const { fetchTypeDefs } = require('apollo-mocked-provider');
 
 (() => {
-  fetchTypeDefs({ uri: "http://localhost:4000/graphql" });
+  fetchTypeDefs({ uri: 'http://localhost:4000/graphql' });
 })();
 ```
 
@@ -45,21 +45,44 @@ Then run that file
 node downloadTypeDefs.js
 ```
 
+### Using apollo-hooks-provider
+
+If you would like to use [react-apollo-hooks](https://github.com/trojanowski/react-apollo-hooks) you can pass a custom
+provider to the `createApollo*` functions:
+
+```jsx
+import { ApolloProvider } from 'react-apollo-hooks';
+
+export const ApolloMockedProvider = createApolloMockedProvider(
+  typeDefs,
+  cache,
+  ApolloProvider
+);
+export const ApolloErrorProvider = createApolloErrorProvider(
+  cache,
+  ApolloProvider
+);
+export const ApolloLoadingProvider = createApolloLoadingProvider(
+  cache,
+  ApolloProvider
+);
+```
+
 ## testing
 
 ```jsx
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloMockedProvider>
       <Todos />
@@ -75,19 +98,18 @@ test("TodoForm", async () => {
 Loading:
 
 ```jsx
-
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloLoadingProvider>
       <Todos />
@@ -96,59 +118,56 @@ test("TodoForm", async () => {
 
   debug();
 });
-
 ```
 
 Error:
 
 ```jsx
-
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
-    <ApolloErrorProvider graphQLErrors={[{ message: "something went wrong" }]}>
+    <ApolloErrorProvider graphQLErrors={[{ message: 'something went wrong' }]}>
       <Todos />
     </ApolloErrorProvider>
   );
 
   debug();
-  await Promise.resolve()
+  await Promise.resolve();
   debug();
 });
-
 ```
 
 Custom mocks:
 
 ```jsx
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloMockedProvider
       customResolvers={{
         Query: () => ({
-          todos: () => [{ id: 1, type: "hello from custom mocked data" }]
-        })
+          todos: () => [{ id: 1, type: 'hello from custom mocked data' }],
+        }),
       }}
     >
       <Todos />
